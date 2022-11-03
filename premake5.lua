@@ -25,7 +25,7 @@ project "Game"
         "%{prj.name}/source"
     }
 
-    links { "SDL2main", "SDL2", "SDL2_image" }
+    links { "SDL2main", "SDL2", "SDL2_image", "SDL2_ttf" }
 
     filter "configurations:Debug"
         symbols "on"

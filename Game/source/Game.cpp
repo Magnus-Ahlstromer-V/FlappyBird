@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "Input/Input.h"
 
+#include <SDL2/SDL_ttf.h>
 #include <time.h>
 #include <stdlib.h>
 
@@ -10,6 +11,7 @@ Game::Game()
 	m_height = 450;
 	m_title = "Flappy Bird";
 	m_gameOver = false;
+	m_score = 0;
 
 	srand(time(NULL));
 
@@ -22,23 +24,30 @@ Game::Game()
 		m_groundPipes.push_back(new Pipe(225*i + 800, rand() % 250 + 200));
 		m_ceilingPipes.push_back(new Pipe(m_groundPipes[i]->GetX(), m_groundPipes[i]->GetY() - 450));	
 	}
+
+	m_gameOverText = new Text("Game Over! Press R to restart", 32);
+	m_gameOverText->SetColor(0xFF, 0x00, 0x00);
+	m_gameOverText->SetFont(m_renderer, "assets/fonts/font.ttf");
 }
 
 Game::~Game()
 {
 	delete m_bird;
+	delete m_gameOverText;
 
 	for (Pipe* pipe : m_groundPipes)
 		delete pipe;
 
 	SDL_DestroyWindow(m_window);
 	SDL_DestroyRenderer(m_renderer);
+	TTF_Quit();
 	SDL_Quit();
 }
 
 bool Game::Init()
 {
 	SDL_Init(SDL_INIT_EVERYTHING);
+	TTF_Init();
 
 	m_window = SDL_CreateWindow(m_title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_width, m_height, 0);
 	m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_PRESENTVSYNC);
@@ -55,6 +64,7 @@ bool Game::Collide(Bird* bird, Pipe* pipe)
 void Game::Reset()
 {
 	m_gameOver = false;
+	m_score = 0;
 
 	m_bird->SetX(80.f);
 	m_bird->SetY(450.f / 2.f - m_bird->GetH());
@@ -72,7 +82,6 @@ void Game::Reset()
 void Game::Update()
 {
 	HandleEvents();
-
 	if (!m_gameOver)
 	{
 		m_bird->Update();
@@ -85,6 +94,9 @@ void Game::Update()
 			if (Collide(m_bird, m_groundPipes[i])) m_gameOver = true;
 			if (Collide(m_bird, m_ceilingPipes[i])) m_gameOver = true;
 			if (m_bird->GetY() + m_bird->GetH() > 450.f) m_gameOver = true;
+
+			if (m_bird->GetX() > m_groundPipes[i]->GetX() + m_groundPipes[i]->GetW())
+				m_score++;
 		}
 	}
 	else
@@ -108,6 +120,9 @@ void Game::Render()
 		m_groundPipes[i]->Draw(m_renderer);
 		m_ceilingPipes[i]->Draw(m_renderer);
 	}
+
+	if (m_gameOver)
+		m_gameOverText->Display(m_renderer, m_width / 2 - m_gameOverText->GetW() / 2, 300);
 
 	SDL_RenderPresent(m_renderer);
 }
