@@ -30,4 +30,5 @@ private:
 	float m_velocity;
 
 	SDL_Rect m_body;
+	SDL_Texture* m_texture;
 };

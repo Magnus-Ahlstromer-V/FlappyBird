@@ -1,4 +1,5 @@
 #include "Text.h"
+#include "Global.h"
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_ttf.h>
 
@@ -13,21 +14,23 @@ Text::Text(const std::string& text, int fontSize)
 	m_fontSize = fontSize;
 }
 
-void Text::Display(SDL_Renderer* renderer, int x, int y)
+void Text::Display(int x, int y)
 {
 	m_body.x = x;
 	m_body.y = y;
-	SDL_RenderCopy(renderer, m_texture, NULL, &m_body);
+	SDL_RenderCopy(Global.renderer, m_texture, NULL, &m_body);
 }
 
-void Text::SetFont(SDL_Renderer* renderer, const char* path)
+void Text::SetFont(const char* path)
 {
 	TTF_Font* font = TTF_OpenFont(path, m_fontSize);
 	SDL_Surface* surface = TTF_RenderText_Solid(font, m_text.c_str(), m_color);
-	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+	SDL_Texture* texture = SDL_CreateTextureFromSurface(Global.renderer, surface);
 
 	m_texture = texture;
 	SDL_QueryTexture(m_texture, NULL, NULL, &m_body.w, &m_body.h);
+
+	SDL_FreeSurface(surface);
 }
 
 void Text::SetColor(uint8_t r, uint8_t g, uint8_t b)

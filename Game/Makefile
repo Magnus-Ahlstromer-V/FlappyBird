@@ -67,10 +67,12 @@ endif
 OBJECTS := \
 	$(OBJDIR)/Bird.o \
 	$(OBJDIR)/Game.o \
+	$(OBJDIR)/Global.o \
 	$(OBJDIR)/Input.o \
 	$(OBJDIR)/Main.o \
 	$(OBJDIR)/Pipe.o \
 	$(OBJDIR)/Text.o \
+	$(OBJDIR)/TextureManager.o \
 
 RESOURCES := \
 
@@ -135,6 +137,9 @@ $(OBJDIR)/Bird.o: source/Bird.cpp
 $(OBJDIR)/Game.o: source/Game.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Global.o: source/Global.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Input.o: source/Input/Input.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
@@ -145,6 +150,9 @@ $(OBJDIR)/Pipe.o: source/Pipe.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Text.o: source/Text.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/TextureManager.o: source/TextureManager.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 

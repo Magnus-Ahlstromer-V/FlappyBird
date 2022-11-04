@@ -34,7 +34,7 @@ private:
 	std::vector<Pipe*> m_groundPipes;
 	std::vector<Pipe*> m_ceilingPipes;
 	Text* m_gameOverText;
+	Text* m_scoreText;
 
 	SDL_Window* m_window;
-	SDL_Renderer* m_renderer;
 };

@@ -1,6 +1,10 @@
 #include "Game.h"
 #include "Input/Input.h"
+#include "Global.h"
+#include "Pipe.h"
+#include "TextureManager.h"
 
+#include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <time.h>
 #include <stdlib.h>
@@ -21,13 +25,15 @@ Game::Game()
 	
 	for (int i = 0; i < 4; i++)
 	{
-		m_groundPipes.push_back(new Pipe(225*i + 800, rand() % 250 + 200));
-		m_ceilingPipes.push_back(new Pipe(m_groundPipes[i]->GetX(), m_groundPipes[i]->GetY() - 450));	
+		m_groundPipes.push_back(new Pipe(225*i + 800, rand() % 250 + 200, PIPE_GROUND));
+		m_ceilingPipes.push_back(new Pipe(m_groundPipes[i]->GetX(), m_groundPipes[i]->GetY() - 450, PIPE_CEILING));	
 	}
 
 	m_gameOverText = new Text("Game Over! Press R to restart", 32);
 	m_gameOverText->SetColor(0xFF, 0x00, 0x00);
-	m_gameOverText->SetFont(m_renderer, "assets/fonts/font.ttf");
+	m_gameOverText->SetFont("assets/fonts/font.ttf");
+
+	TextureManager::Get().Load("bg", "assets/textures/bg.png");
 }
 
 Game::~Game()
@@ -39,18 +45,20 @@ Game::~Game()
 		delete pipe;
 
 	SDL_DestroyWindow(m_window);
-	SDL_DestroyRenderer(m_renderer);
+	SDL_DestroyRenderer(Global.renderer);
 	TTF_Quit();
+	IMG_Quit();
 	SDL_Quit();
 }
 
 bool Game::Init()
 {
 	SDL_Init(SDL_INIT_EVERYTHING);
+	IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
 	TTF_Init();
 
 	m_window = SDL_CreateWindow(m_title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_width, m_height, 0);
-	m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_PRESENTVSYNC);
+	Global.renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_PRESENTVSYNC);
 
 	return true;
 }
@@ -95,36 +103,38 @@ void Game::Update()
 			if (Collide(m_bird, m_ceilingPipes[i])) m_gameOver = true;
 			if (m_bird->GetY() + m_bird->GetH() > 450.f) m_gameOver = true;
 
-			if (m_bird->GetX() > m_groundPipes[i]->GetX() + m_groundPipes[i]->GetW())
+			if (m_bird->GetX() == m_groundPipes[i]->GetX())
 				m_score++;
+
+			
 		}
 	}
 	else
 	{
 		if (Input.keys[SDL_SCANCODE_R])
-		{
 			Reset();
-		}
 	}
 }
 
 void Game::Render()
 {
-	SDL_SetRenderDrawColor(m_renderer, 0x00, 0x11, 0x22, 0xFF);
-	SDL_RenderClear(m_renderer);
+	SDL_SetRenderDrawColor(Global.renderer, 0x00, 0x11, 0x22, 0xFF);
+	SDL_RenderClear(Global.renderer);
 
-	m_bird->Draw(m_renderer);
+	TextureManager::Get().Draw("bg", 0, -800, 288, 512, 3);
+
+	m_bird->Draw(Global.renderer);
 	
 	for (int i = 0; i < 4; i++)
 	{
-		m_groundPipes[i]->Draw(m_renderer);
-		m_ceilingPipes[i]->Draw(m_renderer);
+		m_groundPipes[i]->Draw(Global.renderer);
+		m_ceilingPipes[i]->Draw(Global.renderer);
 	}
 
 	if (m_gameOver)
-		m_gameOverText->Display(m_renderer, m_width / 2 - m_gameOverText->GetW() / 2, 300);
+		m_gameOverText->Display(m_width / 2 - m_gameOverText->GetW() / 2, 300);
 
-	SDL_RenderPresent(m_renderer);
+	SDL_RenderPresent(Global.renderer);
 }
 
 void Game::Run()

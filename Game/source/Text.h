@@ -8,10 +8,10 @@ class Text
 public:
 	Text(const std::string& text, int fontSize);
 
-	void SetFont(SDL_Renderer* renderer, const char* path);
+	void SetFont(const char* path);
 	void SetColor(uint8_t r, uint8_t g, uint8_t b);
 
-	void Display(SDL_Renderer* renderer, int x, int y);
+	void Display(int x, int y);
 
 	inline int GetW() const { return m_body.w; }
 	inline int GetH() const { return m_body.h; }
