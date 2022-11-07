@@ -27,13 +27,13 @@ void Bird::Update()
 {
 	RigBody(m_xPosition, m_yPosition, m_width, m_height);
 
-	m_velocity += 0.5;
+	m_velocity += 0.75;
 	m_yPosition += m_velocity;
 
 	if (m_yPosition >= 0.f)
 	{
 		if (Input.keys[SDL_SCANCODE_SPACE])
-			m_velocity = -7;
+			m_velocity = -8;
 	}
 	else
 	{
@@ -41,7 +41,7 @@ void Bird::Update()
 	}
 }
 
-void Bird::Draw(SDL_Renderer* renderer)
+void Bird::Draw()
 {	
-	TextureManager::Get().Draw("bird", m_xPosition, m_yPosition, m_body.w, m_body.h, 2);
+	TextureManager::Get().Draw("bird", m_xPosition, m_yPosition, m_body.w, m_body.h, 1);
 }

@@ -90,6 +90,10 @@ void Game::Reset()
 void Game::Update()
 {
 	HandleEvents();
+
+	if (Input.keys[SDL_SCANCODE_ESCAPE])
+		SetWindowShouldClose();
+
 	if (!m_gameOver)
 	{
 		m_bird->Update();
@@ -123,7 +127,7 @@ void Game::Render()
 
 	TextureManager::Get().Draw("bg", 0, -800, 288, 512, 3);
 
-	m_bird->Draw(Global.renderer);
+	m_bird->Draw();
 	
 	for (int i = 0; i < 4; i++)
 	{

@@ -16,7 +16,7 @@ public:
 	inline void SetVelocity(float v) { m_velocity = v; }
 
 	void Update();
-	void Draw(SDL_Renderer* renderer);
+	void Draw();
 
 private:
 	void RigBody(int x, int y, int w, int h);
