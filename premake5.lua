@@ -1,8 +1,9 @@
 workspace "Workspace"
     architecture "x64"
     configurations { "Debug", "Release" }
+    platforms { "Windows", "Linux" }
 
-outputdir = "%{cfg.buildcfg}"
+outputdir = "%{cfg.buildcfg}-%{cfg.system}"
 
 project "Game"
     location "Game"
@@ -20,12 +21,16 @@ project "Game"
         "%{prj.name}/source/**.cpp"
     }
 
-    includedirs
-    {
-        "%{prj.name}/source"
-    }
+    filter { "platforms:Windows" }
+        system "Windows"
+        includedirs { "vendor/Windows/SDL2/include", "%{prj.name}/source" }
+        libdirs { "vendor/Windows/SDL2/lib" }
+        links { "mingw32", "SDL2main", "SDL2", "SDL2_image", "SDL2_ttf" }
 
-    links { "SDL2main", "SDL2", "SDL2_image", "SDL2_ttf" }
+    filter { "platforms:Linux" }
+        system "Linux"
+        includedirs { "%{prj.name}/source" }
+        links { "SDL2main", "SDL2", "SDL2_image", "SDL2_ttf" }
 
     filter "configurations:Debug"
         symbols "on"
